@@ -102,11 +102,20 @@ module.exports = {
 		const { senderID, threadID } = event;
 		const command = args[0]?.toLowerCase();
 
-		// Initialize bankData if it doesn't exist
-		if (!global.db.bankData) {
-			const { bankData } = require('../../database/controller');
-			global.db.bankData = bankData;
-		}
+// Initialize global.db and bankData safely
+if (!global.db) global.db = {};
+
+if (!global.db.bankData) {
+    const { bankData } = require('../../database/controller');
+    global.db.bankData = bankData;
+}
+
+const bankData = global.db.bankData;
+
+let bank = await bankData.get(senderID);
+if (!bank) {
+    bank = await bankData.create(senderID);
+}
 
 		const bankData = global.db.bankData;
 
