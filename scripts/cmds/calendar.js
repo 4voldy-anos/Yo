@@ -9,10 +9,10 @@ module.exports = {
     name: "calendar",
     version: "1.0",
     author: "Saimx69x",
-    shortDescription: "🗓️ Stylish English Calendar via API",
-    longDescription: "Fetches calendar image from API for Asia/Dhaka",
+    shortDescription: "🗓️ Calendrier stylé en anglais via API",
+    longDescription: "Récupère une image de calendrier depuis l'API pour le fuseau horaire Asia/Dhaka",
     category: "utility",
-    guide: { en: "{p}calendar" }
+    guide: { fr: "{p}calendar" }
   },
 
   onStart: async function ({ api, event }) {
@@ -35,9 +35,9 @@ module.exports = {
       );
 
     } catch (err) {
-      console.error("Calendar command error:", err.message);
+      console.error("Erreur commande calendrier :", err.message);
       api.sendMessage(
-        "❌ Failed to fetch calendar image from API.",
+        "❌ Impossible de récupérer l'image du calendrier depuis l'API.",
         event.threadID,
         event.messageID
       );
