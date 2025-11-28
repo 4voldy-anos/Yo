@@ -10,7 +10,7 @@ module.exports = {
     name: "cpanel",
     version: "5.1",
     author: "Christus",
-    description: "Generates a futuristic static hex system dashboard with color-changing borders.",
+    description: "Génère un tableau de bord futuriste en hexagones avec des bordures luminescentes.",
     usage: "cpanel",
     category: "system",
     role: 0
@@ -37,7 +37,7 @@ module.exports = {
         const d = Math.floor(sec / 86400);
         const h = Math.floor((sec % 86400) / 3600);
         const m = Math.floor((sec % 3600) / 60);
-        return `${d}d ${h}h ${m}m`;
+        return `${d}j ${h}h ${m}m`;
       };
 
       const getSystemStats = () => {
@@ -47,12 +47,12 @@ module.exports = {
         const usedMem = totalMem - freeMem;
         return [
           ["BOT UPTIME", formatUptime(process.uptime())],
-          ["CPU CORES", os.cpus().length.toString()],
+          ["CŒURS CPU", os.cpus().length.toString()],
           ["NODE.JS", process.version],
-          ["RAM USAGE", (usedMem / totalMem * 100).toFixed(1) + "%"],
-          ["SYS UPTIME", formatUptime(uptime)],
-          ["CPU LOAD", os.loadavg()[0].toFixed(2)],
-          ["TOTAL RAM", totalMem.toFixed(1) + " GB"]
+          ["UTILISATION RAM", (usedMem / totalMem * 100).toFixed(1) + "%"],
+          ["UPTIME SYSTÈME", formatUptime(uptime)],
+          ["CHARGE CPU", os.loadavg()[0].toFixed(2)],
+          ["RAM TOTALE", totalMem.toFixed(1) + " GB"]
         ];
       };
 
@@ -86,7 +86,6 @@ module.exports = {
       const cy = height / 2;
       const spacing = 180;
 
-      // Fixed positions
       const positions = [
         [cx, cy - spacing],
         [cx + spacing, cy - spacing / 2],
@@ -101,31 +100,30 @@ module.exports = {
         const stats = getSystemStats();
         ctx.clearRect(0, 0, width, height);
 
-        // Background gradient
         const gradient = ctx.createLinearGradient(0, 0, width, height);
         gradient.addColorStop(0, "#0f0f1b");
         gradient.addColorStop(1, "#1a1a2e");
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
 
-        // Title
         ctx.fillStyle = "#00ffcc";
         ctx.font = "bold 36px Arial";
         ctx.textAlign = "center";
         ctx.shadowColor = "#00ffcc";
         ctx.shadowBlur = 20;
-        ctx.fillText("YOUR POOKIEE BOT PANEL", width / 2, 70);
+        ctx.fillText("TABLEAU DE CONTRÔLE DE TON BOT POOKIEE", width / 2, 70);
         ctx.shadowBlur = 0;
 
-        // Datetime & OS
         ctx.font = "16px Arial";
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "right";
-        ctx.fillText(moment().tz("Asia/Dhaka").format("DD/MM/YYYY HH:mm:ss"), width - 30, 40);
-        ctx.textAlign = "left";
-        ctx.fillText(`OS: ${os.platform()} (x64)`, 30, 40);
 
-        // Draw hexagons in fixed position, only border color changes per frame
+        // ⚠️ Fuseau horaire modifié → Côte d'Ivoire (UTC+0)
+        ctx.fillText(moment().tz("Africa/Abidjan").format("DD/MM/YYYY HH:mm:ss"), width - 30, 40);
+
+        ctx.textAlign = "left";
+        ctx.fillText(`OS : ${os.platform()} (x64)`, 30, 40);
+
         for (let i = 0; i < stats.length; i++) {
           const color = neonColors[(frame + i) % neonColors.length];
           drawHex(positions[i][0], positions[i][1], 90, stats[i][0], stats[i][1], color);
@@ -145,7 +143,7 @@ module.exports = {
 
     } catch (err) {
       console.error(err);
-      api.sendMessage("❌ An error occurred while generating the dashboard.", event.threadID);
+      api.sendMessage("❌ Une erreur est survenue lors de la génération du panneau.", event.threadID);
     }
   }
 };
