@@ -10,12 +10,12 @@ module.exports = {
     aliases: ["upscale"],
     version: "1.1",
     role: 0,
-    author: "ArYAN",
+    author: "Christus",
     countDown: 10,
-    longDescription: "Upscale images to 4K resolution.",
+    longDescription: "Améliore une image en résolution 4K.",
     category: "image",
     guide: {
-      en: "${pn} reply to an image to upscale it to 4K resolution."
+      en: "${pn} répondre à une image pour l'améliorer en 4K."
     }
   },
 
@@ -26,7 +26,7 @@ module.exports = {
       !event.messageReply.attachments[0] ||
       event.messageReply.attachments[0].type !== "photo"
     ) {
-      return message.reply("📸 Please reply to an image to upscale it.");
+      return message.reply("📸 Veuillez répondre à une image pour l'améliorer.");
     }
 
     const i = event.messageReply.attachments[0].url;
@@ -34,11 +34,11 @@ module.exports = {
     let m;
 
     try {
-      const r = await message.reply("🔄 Processing your image, please wait...");
+      const r = await message.reply("🔄 Traitement de votre image, veuillez patienter...");
       m = r.messageID;
 
       const d = await a.get(`${u}?imageUrl=${encodeURIComponent(i)}`);
-      if (!d.data.status) throw new Error(d.data.message || "API error");
+      if (!d.data.status) throw new Error(d.data.message || "Erreur API");
 
       const x = await a.get(d.data.enhancedImageUrl, { responseType: "stream" });
       const w = f.createWriteStream(t);
@@ -50,12 +50,12 @@ module.exports = {
       });
 
       await message.reply({
-        body: "✅ Your 4K upscaled image is ready!",
+        body: "✅ Votre image améliorée en 4K est prête !",
         attachment: f.createReadStream(t),
       });
     } catch (e) {
       console.error("Upscale Error:", e);
-      message.reply("❌ An error occurred while upscaling the image. Please try again later.");
+      message.reply("❌ Une erreur est survenue lors de l'amélioration de l'image. Veuillez réessayer plus tard.");
     } finally {
       if (m) message.unsend(m);
       if (f.existsSync(t)) f.unlinkSync(t);
