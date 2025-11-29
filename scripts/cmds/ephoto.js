@@ -1,120 +1,120 @@
 const axios = require("axios");
 
 const availableTEMPLATES = {
-  "1": "Multicolored Neon Light",
-  "2": "Galaxy Style Free Name",
-  "3": "3D Underwater Text Effect",
+  "1": "Lumière Néon Multicolore",
+  "2": "Style Galaxie Nom Libre",
+  "3": "Texte 3D Sous l'Eau",
   "4": "Logo Viettel",
-  "5": "Typography Text on Pavement",
-  "6": "Lovely Cute 3D Pig Text",
-  "7": "Green Neon Light Effect",
-  "8": "Futuristic Light Text Effect",
-  "9": "Graffiti Cover",
-  "10": "Neon Devil Wings Text",
-  "11": "Advanced Glow Effects",
-  "12": "Dragon Ball Style Text",
-  "13": "Blue Metal Text Effect",
-  "14": "Modern Gold",
-  "15": "Galaxy Tree Effect",
-  "16": "Gold Letters Online",
-  "17": "Metal Mascots Logo Maker",
-  "18": "Plasma Text Effect",
-  "19": "Handwritten Foggy Glass",
-  "20": "Modern Gold 3",
-  "21": "Metal Logo Online",
-  "22": "Graffiti Lettering",
-  "23": "Galaxy Write Effect",
-  "24": "Graffiti Text 5",
-  "25": "Road Paint Text",
-  "26": "Chocolate Text",
-  "27": "Naruto Shippuden Logo",
-  "28": "Typography Art Layers",
-  "29": "Write in Sand Beach",
-  "30": "Green Brush Typography",
-  "31": "Boom Comic Text",
-  "32": "3D Crack Text",
-  "33": "Paint Splatter Text",
-  "34": "Digital Glitch Text",
-  "35": "Dragon Steel Text",
-  "36": "Graffiti Text 3",
-  "37": "Zombie 3D Text",
-  "38": "Matrix Text Effect",
-  "39": "Galaxy Neon Light Text",
-  "40": "3D Metal Text",
-  "41": "Chalkboard Writing",
-  "42": "Writing on Cakes",
-  "43": "Wet Glass Text",
-  "44": "Galaxy Angel Wings",
-  "45": "Wooden 3D Text",
-  "46": "3D Foil Balloon",
-  "47": "Christmas Snow Text",
-  "48": "Luxury Gold Text",
-  "49": "Anonymous Hacker Avatar",
-  "50": "Broken Glass Text",
-  "51": "Blackpink Style Logo",
-  "52": "Jean Fabric Text",
-  "53": "Foggy Rainy Text",
-  "54": "Birthday Foil Balloon",
-  "55": "Stars Night Effect",
-  "56": "Paper Cut Effect",
-  "57": "Water Text",
-  "58": "Unique Green Light Word",
-  "59": "3D Beach Text",
-  "60": "Chalkboard Writing 2",
-  "61": "Dragon Fire Text",
-  "62": "Underwater Text",
-  "63": "Cake Text",
-  "64": "Metallic Impressive Font",
-  "65": "Eraser Deleting Text",
-  "66": "Metal Text Online",
-  "67": "Dance Text",
-  "68": "Cloud Text in Sky",
-  "69": "3D Water Text",
-  "70": "Chrome Text Effect",
-  "71": "Bokeh Text Effect",
-  "72": "Incandescent Bulb Text",
-  "73": "Metal Avatar Name",
-  "74": "3D Hologram Text",
-  "75": "Stars Night Online",
-  "76": "Gold Text Effect",
-  "77": "Purple Text Effect",
-  "78": "Pixel Glitch Text",
-  "79": "Dark Green Typography",
-  "80": "Diamond Text",
-  "81": "Blue Neon Logo",
-  "82": "Neon Text Effect",
-  "83": "Shadow Text",
-  "84": "Galaxy Light Text",
-  "85": "Titanium Text",
-  "86": "Fabric Text Effect",
-  "87": "Blackpink Logo 2",
-  "88": "3D Text Effect",
-  "89": "Magic Text Effect",
-  "90": "Sand Beach Text",
-  "91": "Neon Glitch Text",
-  "92": "Cloth Text Effect",
-  "93": "Message Coffee Text",
-  "94": "Jewel Text Effect",
-  "95": "Hot Metallic Effect",
-  "96": "Typography Maker 5",
-  "97": "Candy Text Effect",
-  "98": "Galaxy Bat Write",
-  "99": "Firework Text Effect",
-  "100": "Graffiti Text Online"
+  "5": "Typographie sur Pavé",
+  "6": "Texte 3D Cochon Mignon",
+  "7": "Effet Lumière Néon Verte",
+  "8": "Texte Lumière Futuriste",
+  "9": "Graffiti Couverture",
+  "10": "Texte Ailes du Diable Néon",
+  "11": "Effets Glow Avancés",
+  "12": "Texte Style Dragon Ball",
+  "13": "Effet Texte Métal Bleu",
+  "14": "Or Moderne",
+  "15": "Effet Arbre Galaxie",
+  "16": "Lettres Or en Ligne",
+  "17": "Créateur Logo Mascottes Métal",
+  "18": "Effet Texte Plasma",
+  "19": "Texte Brouillard Manuscrit",
+  "20": "Or Moderne 3",
+  "21": "Logo Métal en Ligne",
+  "22": "Lettres Graffiti",
+  "23": "Effet Écriture Galaxie",
+  "24": "Graffiti Texte 5",
+  "25": "Texte Peinture Routière",
+  "26": "Texte Chocolat",
+  "27": "Logo Naruto Shippuden",
+  "28": "Art Typographique en Couches",
+  "29": "Écrire dans le Sable",
+  "30": "Typographie Pinceau Vert",
+  "31": "Texte Comic Boom",
+  "32": "Texte Fissuré 3D",
+  "33": "Texte Éclaboussure Peinture",
+  "34": "Texte Glitch Numérique",
+  "35": "Texte Dragon Steel",
+  "36": "Graffiti Texte 3",
+  "37": "Texte Zombie 3D",
+  "38": "Effet Texte Matrix",
+  "39": "Texte Lumière Néon Galaxie",
+  "40": "Texte Métal 3D",
+  "41": "Écriture Tableau Noir",
+  "42": "Écriture sur Gâteaux",
+  "43": "Texte Verre Humide",
+  "44": "Ailes Ange Galaxie",
+  "45": "Texte Bois 3D",
+  "46": "Ballon Aluminium 3D",
+  "47": "Texte Neige Noël",
+  "48": "Texte Or Luxe",
+  "49": "Avatar Hacker Anonyme",
+  "50": "Texte Verre Cassé",
+  "51": "Logo Style Blackpink",
+  "52": "Texte Tissu Jean",
+  "53": "Texte Brouillard Pluvieux",
+  "54": "Ballon Aluminium Anniversaire",
+  "55": "Effet Nuit Étoilée",
+  "56": "Effet Découpage Papier",
+  "57": "Texte Eau",
+  "58": "Mot Lumière Verte Unique",
+  "59": "Texte Plage 3D",
+  "60": "Écriture Tableau Noir 2",
+  "61": "Texte Feu Dragon",
+  "62": "Texte Sous l'Eau",
+  "63": "Texte Gâteau",
+  "64": "Police Métal Impressionnante",
+  "65": "Texte Effacé Gomme",
+  "66": "Texte Métal en Ligne",
+  "67": "Texte Danse",
+  "68": "Texte Nuage dans le Ciel",
+  "69": "Texte Eau 3D",
+  "70": "Effet Texte Chrome",
+  "71": "Effet Texte Bokeh",
+  "72": "Texte Ampoule Incandescente",
+  "73": "Nom Avatar Métal",
+  "74": "Texte Hologramme 3D",
+  "75": "Nuit Étoilée en Ligne",
+  "76": "Effet Texte Or",
+  "77": "Effet Texte Violet",
+  "78": "Texte Glitch Pixel",
+  "79": "Typographie Vert Foncé",
+  "80": "Texte Diamant",
+  "81": "Logo Néon Bleu",
+  "82": "Effet Texte Néon",
+  "83": "Texte Ombre",
+  "84": "Texte Lumière Galaxie",
+  "85": "Texte Titane",
+  "86": "Effet Texte Tissu",
+  "87": "Logo Blackpink 2",
+  "88": "Effet Texte 3D",
+  "89": "Effet Texte Magique",
+  "90": "Texte Plage de Sable",
+  "91": "Texte Glitch Néon",
+  "92": "Effet Texte Tissu",
+  "93": "Texte Message Café",
+  "94": "Effet Texte Bijou",
+  "95": "Effet Métal Chaud",
+  "96": "Créateur Typographie 5",
+  "97": "Effet Texte Bonbon",
+  "98": "Écriture Chauve-Souris Galaxie",
+  "99": "Effet Feu d'Artifice",
+  "100": "Texte Graffiti en Ligne"
 };
 
 module.exports = {
   config: {
     name: "ephoto",
     version: "1.0",
-    author: "Saimx69x",
+    author: "Christus",
     countDown: 5,
     role: 0,
-    shortDescription: "Create stylish Ephoto text effect or view template list",
-    longDescription: "Generate Ephoto effect using text and ID (1–100) or show all available template list",
+    shortDescription: "Créer un effet texte Ephoto stylé ou voir la liste des modèles",
+    longDescription: "Générer un effet Ephoto avec texte et ID (1–100) ou afficher la liste de tous les modèles disponibles",
     category: "image",
     guide: {
-      en: "{pn} <text> - <id>\nExample: {pn} Saimx69x - 27\n\nView list:\n{pn} list"
+      fr: "{pn} <texte> - <id>\nExemple: {pn} Christus - 27\n\nVoir la liste:\n{pn} list"
     }
   },
 
@@ -127,11 +127,11 @@ module.exports = {
     const input = args.join(" ").trim();
 
     if (input.toLowerCase() === "list") {
-      let msg = "🎨 𝐄𝐏𝐇𝐎𝐓𝐎 𝐓𝐄𝐌𝐏𝐋𝐀𝐓𝐄𝐒 (1–100)\n\n";
+      let msg = "🎨 𝐌𝐎𝐃È𝐋𝐄𝐒 𝐄𝐏𝐇𝐎𝐓𝐎 (1–100)\n\n";
       for (const i in availableTEMPLATES) {
         msg += `🆔 ${i.padStart(3, " ")} → ${availableTEMPLATES[i]}\n`;
       }
-      msg += `\n💡 Usage:\n${prefix}ephoto <text> - <id>\nExample: ${prefix}ephoto Saimx69x - 27`;
+      msg += `\n💡 Utilisation:\n${prefix}ephoto <texte> - <id>\nExemple: ${prefix}ephoto Christus - 27`;
       return message.reply(msg);
     }
 
@@ -140,16 +140,16 @@ module.exports = {
     const id = parseInt(parts[1]?.trim());
 
     if (!text || !id) {
-      return message.reply(`⚠️ Usage: ${prefix}ephoto <text> - <id>\nExample: ${prefix}ephoto Saimx69x - 27`);
+      return message.reply(`⚠️ Utilisation: ${prefix}ephoto <texte> - <id>\nExemple: ${prefix}ephoto Christus - 27`);
     }
 
     if (isNaN(id) || id < 1 || id > 100) {
       return message.reply(
-        `❌ Invalid ID! Please use ID between 1–100.\nUse '${prefix}ephoto list' to check all available templates.`
+        `❌ ID invalide ! Veuillez utiliser un ID entre 1 et 100.\nUtilisez '${prefix}ephoto list' pour voir tous les modèles disponibles.`
       );
     }
 
-    const loadingMsg = await message.reply(`🎨 Generating Ephoto effect for “${text}” (ID: ${id})...`);
+    const loadingMsg = await message.reply(`🎨 Génération de l'effet Ephoto pour “${text}” (ID: ${id})...`);
 
     try {
       const githubRawUrl = "https://raw.githubusercontent.com/Saim-x69x/sakura/main/ApiUrl.json";
@@ -159,17 +159,17 @@ module.exports = {
 
       if (!res.data?.status || !res.data.result_url) {
         await api.unsendMessage(loadingMsg.messageID);
-        return message.reply("❌ Oops! Something went wrong. Please try again later.");
+        return message.reply("❌ Oups ! Une erreur est survenue. Veuillez réessayer plus tard.");
       }
 
       await api.unsendMessage(loadingMsg.messageID);
       return message.reply({
-        body: `✅ 𝐄𝐩𝐡𝐨𝐭𝐨 𝐄𝐟𝐟𝐞𝐜𝐭 𝐆𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝!\n\n🆔 ID: ${id} (${availableTEMPLATES[id]})\n🔤 Text: ${text}`,
+        body: `✅ Effet 𝐄𝐩𝐡𝐨𝐭𝐨 généré !\n\n🆔 ID: ${id} (${availableTEMPLATES[id]})\n🔤 Texte: ${text}`,
         attachment: await global.utils.getStreamFromURL(res.data.result_url)
       });
     } catch (e) {
       await api.unsendMessage(loadingMsg.messageID);
-      return message.reply("❌ Oops! Something went wrong. Please try again later.");
+      return message.reply("❌ Oups ! Une erreur est survenue. Veuillez réessayer plus tard.");
     }
   }
 };
