@@ -9,21 +9,19 @@ module.exports = {
     version: "1.2",
     role: 0,
     author: "Christus",
-    description: "Get user information and profile photo",
+    description: "Obtenir les informations et la photo de profil d'un utilisateur",
     category: "information",
     countDown: 10,
   },
 
   onStart: async function ({ event, message, usersData, api, args }) {
     try {
-      // get caller id and mentioned id if any
       const uid1 = event.senderID;
       const uid2 =
         event.mentions && Object.keys(event.mentions).length
           ? Object.keys(event.mentions)[0]
           : null;
 
-      // parse uid from args (plain id or profile.php?id=123)
       let uid;
       if (args && args[0]) {
         if (/^\d+$/.test(args[0])) {
@@ -34,7 +32,6 @@ module.exports = {
         }
       }
 
-      // fallback to reply, mention, or self
       if (!uid) {
         uid =
           event.type === "message_reply"
@@ -42,7 +39,6 @@ module.exports = {
             : uid2 || uid1;
       }
 
-      // fetch remote "baby" data safely
       let babyTeach = 0;
       try {
         const response = await axios.get(`${baseApiUrl}/baby?list=all`);
@@ -53,42 +49,32 @@ module.exports = {
         babyTeach = 0;
       }
 
-      // fetch user info and local db info
       const userInfo = (await api.getUserInfo(uid)) || {};
       const info = userInfo[uid] || {};
 
-      // avatar fallback
       let avatarUrl = null;
       try {
         avatarUrl = (await usersData.getAvatarUrl(uid)) || null;
       } catch (e) {
         avatarUrl = null;
       }
+      if (!avatarUrl) avatarUrl = "https://i.imgur.com/TPHk4Qu.png";
 
-      if (!avatarUrl) {
-        avatarUrl = "https://i.imgur.com/TPHk4Qu.png"; // placeholder
-      }
-
-      // gender text mapping with neutral default
-      let genderText = "⚧️ Unknown";
+      let genderText = "⚧️ Inconnu";
       switch (info.gender) {
         case 1:
-          genderText = "👩 Female";
+          genderText = "👩 Femme";
           break;
         case 2:
-          genderText = "👨 Male";
+          genderText = "👨 Homme";
           break;
-        default:
-          genderText = "⚧️ Unknown";
       }
 
-      // local usersData record (money, exp, etc.)
       const userRecord = (await usersData.get(uid)) || {};
       const money = Number(userRecord.money || 0);
       const exp = Number(userRecord.exp || 0);
       const allUser = (await usersData.getAll()) || [];
 
-      // ranks (safe)
       const rank =
         allUser.length > 0
           ? allUser
@@ -104,15 +90,13 @@ module.exports = {
               .findIndex((u) => String(u.userID) === String(uid)) + 1
           : 0;
 
-      // profile / account status info from API
-      const accountType = info.type ? String(info.type).toUpperCase() : "User";
-      const isFriend = info.isFriend ? "✅ Yes" : "❌ No";
+      const accountType = info.type ? String(info.type).toUpperCase() : "Utilisateur";
+      const isFriend = info.isFriend ? "✅ Oui" : "❌ Non";
       const isBirthday =
         typeof info.isBirthday !== "undefined" && info.isBirthday !== false
           ? info.isBirthday
-          : "Private";
+          : "Privé";
 
-      // try to get thread/group info if available
       let threadInfo = {};
       try {
         if (event.isGroup && event.threadID) {
@@ -122,7 +106,6 @@ module.exports = {
         threadInfo = {};
       }
 
-      // format date/time in Africa/Abidjan
       const now = new Date();
       const localeOpts = {
         timeZone: "Africa/Abidjan",
@@ -133,71 +116,67 @@ module.exports = {
         minute: "2-digit",
         hour12: false,
       };
-      const reportDate = new Intl.DateTimeFormat("en-GB", localeOpts).format(
-        now
-      );
+      const reportDate = new Intl.DateTimeFormat("en-GB", localeOpts).format(now);
 
-      // build the formatted message to match the example layout
       const userInformation = [
         "𝐒𝐏𝐘",
         "━━━━━━━━━━━━",
         "",
-        "👤 𝐏𝐄𝐑𝐒𝐎𝐍𝐀𝐋 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍",
-        `📝 𝖥𝗎𝗅𝗅 𝖭𝖺𝗆𝖾: ${info?.name || userRecord?.name || "Unknown"}`,
-        `👤 𝖥𝗂𝗋𝗌𝗍 𝖭𝖺𝗆𝖾: ${extractFirstName(info?.name || userRecord?.name)}`,
-        `👥 𝖫𝖺𝗌𝗍 𝖭𝖺𝗆𝖾: ${extractLastName(info?.name || userRecord?.name)}`,
-        `🆔 𝖴𝗌𝖾𝗋 𝖨𝖣: ${uid}`,
-        `⚧️ 𝖦𝖾𝗇𝖽𝖾𝗋: ${genderText}`,
-        `🔗 𝖴𝗌𝖾𝗋𝗇𝖺𝗆𝖾: ${info?.vanity || "Not set"}`,
-        `🎂 𝖡𝗂𝗋𝗍𝗁𝖽𝖺𝗒: ${isBirthday}`,
-        `🌐 𝖯𝗋𝗈𝖿𝗂𝗅𝖾 𝖴𝖱𝖫: ${info?.profileUrl || "Not available"}`,
+        "👤 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍 𝐏𝐄𝐑𝐒𝐎𝐍𝐍𝐄𝐋𝐋𝐄",
+        `📝 𝗡𝗼𝗺 𝗰𝗼𝗺𝗽𝗹𝗲𝘁: ${info?.name || userRecord?.name || "Inconnu"}`,
+        `👤 𝗣𝗿𝗲𝗺𝗶𝗲𝗿 𝗻𝗼𝗺: ${extractFirstName(info?.name || userRecord?.name)}`,
+        `👥 𝗡𝗼𝗺 𝗱𝗲 𝗳𝗮𝗺𝗶𝗹𝗹𝗲: ${extractLastName(info?.name || userRecord?.name)}`,
+        `🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: ${uid}`,
+        `⚧️ 𝗚𝗲𝗻𝗿𝗲: ${genderText}`,
+        `🔗 𝗡𝗼𝗺 𝗱'𝘂𝘁𝗶𝗹𝗶𝘀𝗮𝘁𝗲𝘂𝗿: ${info?.vanity || "Non défini"}`,
+        `🎂 𝗔𝗻𝗻𝗶𝘃𝗲𝗿𝘀𝗮𝗶𝗿𝗲: ${isBirthday}`,
+        `🌐 𝗣𝗿𝗼𝗳𝗶𝗹 𝗨𝗥𝗟: ${info?.profileUrl || "Non disponible"}`,
         "",
-        "📱 𝐀𝐂𝐂𝐎𝐔𝐍𝐓 𝐒𝐓𝐀𝐓𝐔𝐒",
-        `🏷️ 𝖠𝖼𝖼𝗈𝗎𝗇𝗍 𝖳𝗒𝗉𝖾: ${accountType}`,
-        `✅ 𝖵𝖾𝗋𝗂𝖿𝗂𝖼𝖺𝗍𝗂𝖔𝗇: ${info?.is_verified ? "✅ Verified" : "❌ Not verified"}`,
-        `👥 𝖥𝗋𝗂𝖾𝗇𝖽𝗌𝗁𝗂𝗉: ${isFriend}`,
-        `🚫 𝖡𝖺𝗇𝗻𝖾𝖽: ${info?.is_suspended ? "✅ Yes" : "✅ No"}`,
+        "📱 𝐒𝐓𝐀𝐓𝐔𝐓 𝐃𝐔 𝐂𝐎𝐌𝐏𝐓𝐄",
+        `🏷️ 𝗧𝘆𝗽𝗲 𝗱𝘂 𝗰𝗼𝗺𝗽𝘁𝗲: ${accountType}`,
+        `✅ 𝗩é𝗿𝗶𝗳𝗶𝗰𝗮𝘁𝗶𝗼𝗻: ${info?.is_verified ? "✅ Vérifié" : "❌ Non vérifié"}`,
+        `👥 𝗔𝗺𝗶𝘁𝗶𝗲́: ${isFriend}`,
+        `🚫 𝗕𝗮𝗻𝗻𝗶: ${info?.is_suspended ? "✅ Oui" : "❌ Non"}`,
         "",
-        "🤖 𝐁𝐎𝐓 𝐃𝐀𝐓𝐀𝐁𝐀𝐒𝐄",
-        `📅 𝖥𝗂𝗋𝗌𝗍 𝖩𝗈𝗂𝗇𝖾𝖽: ${userRecord?.firstJoin || "Unknown"}`,
-        `🔄 𝖫𝖺𝗌𝗍 𝖴𝗉𝖽𝖺𝗍𝖾: ${userRecord?.lastUpdate || reportDate}`,
-        `💰 𝖡𝖺𝗅𝖺𝗇𝖼𝖾: ${formatMoney(money)}`,
-        `⭐ 𝖤𝗑𝗉𝖾𝗋𝗂𝖾𝗇𝖼𝖾: ${exp || 0} XP`,
-        `🎯 𝖫𝖾𝗏𝖾𝗅: ${userRecord?.level || "N/A"}`,
-        `📈 𝖭𝖾𝗑𝖙 𝖫𝖾𝗏𝖾𝗅: ${userRecord?.nextLevelXP || "N/A"}`,
+        "🤖 𝐁𝐀𝐒𝐄 𝐃𝐄 𝐃𝐎𝐍𝐍É𝐄𝐒 𝐃𝐔 𝐁𝐎𝐓",
+        `📅 𝗣𝗿𝗲𝗺𝗶𝗲̀𝗿 𝗷𝗼𝗶𝗻: ${userRecord?.firstJoin || "Inconnu"}`,
+        `🔄 𝗗𝗲𝗿𝗻𝗶𝗲̀𝗿𝗲 𝗺𝗶𝘀𝗲 𝗮 𝗷𝗼𝘂𝗿: ${userRecord?.lastUpdate || reportDate}`,
+        `💰 𝗦𝗼𝗹𝗱𝗲: ${formatMoney(money)}`,
+        `⭐ 𝗘𝘅𝗽𝗲́𝗿𝗶𝗲𝗻𝗰𝗲: ${exp || 0} XP`,
+        `🎯 𝗡𝗶𝘃𝗲𝗮𝘂: ${userRecord?.level || "N/A"}`,
+        `📈 𝗣𝗿𝗼𝗰𝗵𝗮𝗶𝗻 𝗻𝗶𝘃𝗲𝗮𝘂: ${userRecord?.nextLevelXP || "N/A"}`,
         "",
-        "💬 𝐆𝐑𝐎𝐔𝐏 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍",
-        `🏷️ 𝖭𝗂𝖼𝗄𝗇𝖺𝗆𝖾: ${threadInfo?.nicknames?.[uid] || "Not set"}`,
-        `📅 𝖩𝗈𝗂𝗇𝖾𝖽 𝖦𝗋𝗈𝗎𝗉: ${threadInfo?.participantIDs && threadInfo.participantIDs.includes(uid) ? "Joined" : "Unknown"}`,
-        `👑 𝖠𝖽𝗆𝗂𝗇 𝖲𝗍𝖺𝗍𝖚𝗌: ${threadInfo?.adminIDs && threadInfo.adminIDs.includes(uid) ? "✅ Admin" : "❌ Member"}`,
-        `💬 𝖬𝖾𝗌𝖲𝖺𝗀𝖾𝗌 𝖲𝖾𝗇𝗍: ${userRecord?.messages || 0}`,
-        `📍 𝖦𝗋𝗈𝗎𝗉 𝖭𝖺𝗆𝖾: ${threadInfo?.threadName || "Unknown"}`,
+        "💬 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍 𝐃𝐄 𝐆𝐑𝐎𝐔𝐏𝐄",
+        `🏷️ 𝗦𝘂𝗿𝗻𝗼𝗺: ${threadInfo?.nicknames?.[uid] || "Non défini"}`,
+        `📅 𝗥𝗲𝗷𝗼𝗶𝗻𝘁 𝗹𝗲 𝗴𝗿𝗼𝘂𝗽𝗲: ${threadInfo?.participantIDs && threadInfo.participantIDs.includes(uid) ? "Oui" : "Inconnu"}`,
+        `👑 𝗦𝘁𝗮𝘁𝘂𝘁 𝗮𝗱𝗺𝗶𝗻: ${threadInfo?.adminIDs && threadInfo.adminIDs.includes(uid) ? "✅ Admin" : "❌ Membre"}`,
+        `💬 𝗠𝗲𝘀𝘀𝗮𝗴𝗲𝘀 𝗲𝗻𝘃𝗼𝘆𝗲́𝘀: ${userRecord?.messages || 0}`,
+        `📍 𝗡𝗼𝗺 𝗱𝘂 𝗴𝗿𝗼𝘂𝗽𝗲: ${threadInfo?.threadName || "Inconnu"}`,
         "",
-        "📊 𝐏𝐑𝐎𝐅𝐈𝐋𝐄 𝐒𝐓𝐀𝐓𝐈𝐒𝐓𝐈𝐂𝐒",
-        `🌟 𝖯𝗋𝗈𝖿𝗂𝗅𝖾 𝖲𝖼𝗈𝗋𝖾: ${userRecord?.profileScore || "N/A"}`,
-        `🏆 𝖴𝗌𝖾𝗋 𝖱𝖺𝗇𝗄: ${rank > 0 ? `#${rank}` : "Not ranked"}`,
-        `📈 𝖤𝖷𝖯 𝖱𝖺𝗇𝗄𝗂𝗇𝗀: ${userRecord?.expRank || "N/A"}`,
-        `💰 𝖬𝗈𝗇𝖾𝗒 𝖱𝖺𝗇𝗄𝗂𝗇𝗀: ${moneyRank > 0 ? `#${moneyRank}` : "Not ranked"}`,
-        `🕐 𝑅𝑒𝑝𝑜𝑟𝑡 𝐺𝑒𝑛𝑒𝑟𝑎𝑡𝑒𝑑: ${reportDate}`,
+        "📊 𝐒𝐓𝐀𝐓𝐈𝐒𝐓𝐈𝐐𝐔𝐄𝐒 𝐃𝐔 𝗣𝗥𝗢𝗙𝗜𝗟",
+        `🌟 𝗦𝗰𝗼𝗿𝗲 𝗱𝘂 𝗽𝗿𝗼𝗳𝗶𝗹: ${userRecord?.profileScore || "N/A"}`,
+        `🏆 𝗥𝗮𝗻𝗴 𝗱'𝘂𝘁𝗶𝗹𝗶𝘀𝗮𝘁𝗲𝘂𝗿: ${rank > 0 ? `#${rank}` : "Non classé"}`,
+        `📈 𝗖𝗹𝗮𝘀𝘀𝗲𝗺𝗲𝗻𝘁 𝗘𝗫𝗣: ${userRecord?.expRank || "N/A"}`,
+        `💰 𝗖𝗹𝗮𝘀𝘀𝗲𝗺𝗲𝗻𝘁 𝗮𝗿𝗴𝗲𝗻𝘁: ${moneyRank > 0 ? `#${moneyRank}` : "Non classé"}`,
+        `🕐 𝗥𝗮𝗽𝗽𝗼𝗿𝘁 𝗴𝗲́𝗻𝗲́𝗿𝗲́: ${reportDate}`,
       ].join("\n");
 
-      // send reply with avatar attachment
       await message.reply({
         body: userInformation,
         attachment: await global.utils.getStreamFromURL(avatarUrl),
       });
     } catch (err) {
-      console.error("SPY command error:", err);
-      return message.reply("❌ An error occurred while fetching user info.");
+      console.error("Erreur commande SPY:", err);
+      return message.reply("❌ Une erreur est survenue lors de la récupération des informations.");
     }
   },
 };
 
 // --- helpers ---
 function extractFirstName(full) {
-  if (!full) return "Unknown";
+  if (!full) return "Inconnu";
   const parts = String(full).trim().split(/\s+/);
-  return parts[0] || "Unknown";
+  return parts[0] || "Inconnu";
 }
 function extractLastName(full) {
   if (!full) return "";
@@ -213,4 +192,4 @@ function formatMoney(num) {
     unit++;
   }
   return (Math.round(num * 10) / 10).toString().replace(/\.0$/, "") + units[unit];
-                        }
+        }
