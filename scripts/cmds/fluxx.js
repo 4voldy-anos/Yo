@@ -8,32 +8,32 @@ module.exports = {
   config: {
     name: "fluxx",
     version: "1.0",
-    author: "Redwan",
+    author: "Christus",
     countDown: 20,
     longDescription: {
-      en: "Generate AI images quickly using Fluxx (Redwan's API)."
+      fr: "Génère rapidement des images IA avec Fluxx (API de Christus)."
     },
-    category: "image generator 2",
+    category: "générateur d'image 2",
     role: 0,
     guide: {
-      en: "{pn} <prompt>"
+      fr: "{pn} <prompt>"
     }
   },
 
   onStart: async function ({ api, event, args, message }) {
     const prompt = args.join(' ').trim();
-    if (!prompt) return message.reply("⚠️ Please provide a prompt to generate the image.");
+    if (!prompt) return message.reply("⚠️ Veuillez fournir un prompt pour générer l'image.");
 
     api.setMessageReaction("⌛", event.messageID, () => {}, true);
-    message.reply("⚡ Fluxx is generating your images. Please wait...", async () => {
+    message.reply("⚡ Fluxx génère vos images. Veuillez patienter...", async () => {
       try {
-        // ✅ Fluxx API
+        // ✅ API Fluxx
         const apiUrl = `http://65.109.80.126:20511/api/fluxx?prompt=${encodeURIComponent(prompt)}`;
         const response = await axios.get(apiUrl);
 
         if (!response?.data?.status || !Array.isArray(response.data.images) || response.data.images.length !== 4) {
           api.setMessageReaction("❌", event.messageID, () => {}, true);
-          return message.reply("❌ Image generation failed. Try a different prompt.");
+          return message.reply("❌ La génération de l'image a échoué. Essayez un autre prompt.");
         }
 
         const imageLinks = response.data.images;
@@ -60,7 +60,7 @@ module.exports = {
         out.on("finish", async () => {
           api.setMessageReaction("✅", event.messageID, () => {}, true);
           const msg = {
-            body: "✅ Fluxx image is ready!\n\n❏ Reply with U1, U2, U3, or U4 to choose one.",
+            body: "✅ L'image Fluxx est prête !\n\n❏ Répondez avec U1, U2, U3 ou U4 pour en choisir une.",
             attachment: fs.createReadStream(outputPath)
           };
           message.reply(msg, (err, info) => {
@@ -78,7 +78,7 @@ module.exports = {
       } catch (error) {
         console.error(error);
         api.setMessageReaction("❌", event.messageID, () => {}, true);
-        message.reply("🚫 An error occurred while generating the image. Try again later.");
+        message.reply("🚫 Une erreur est survenue lors de la génération de l'image. Veuillez réessayer plus tard.");
       }
     });
   },
@@ -86,27 +86,27 @@ module.exports = {
   onReply: async function ({ api, event, Reply, message }) {
     const { author, images } = Reply;
     if (event.senderID !== author) {
-      return message.reply("⚠️ Only the person who started the command can select an image.");
+      return message.reply("⚠️ Seule la personne ayant lancé la commande peut sélectionner une image.");
     }
 
     const input = event.body.trim().toUpperCase();
     const match = input.match(/^U([1-4])$/);
     if (!match) {
-      return message.reply("❌ Invalid input. Reply with U1, U2, U3, or U4.");
+      return message.reply("❌ Entrée invalide. Répondez avec U1, U2, U3 ou U4.");
     }
 
     const index = parseInt(match[1]) - 1;
     const selectedImage = images[index];
 
     try {
-      const imageStream = await getStreamFromURL(selectedImage, `fluxx_selected_U${index + 1}.jpg`);
+      const imageStream = await getStreamFromURL(selectedImage, `fluxx_selection_U${index + 1}.jpg`);
       message.reply({
-        body: `🖼️ Here is your selected image (U${index + 1}) from Fluxx.`,
+        body: `🖼️ Voici votre image sélectionnée (U${index + 1}) de Fluxx.`,
         attachment: imageStream
       });
     } catch (error) {
       console.error(error);
-      message.reply("🚫 Could not fetch the selected image. Please try again.");
+      message.reply("🚫 Impossible de récupérer l'image sélectionnée. Veuillez réessayer.");
     }
   }
 };
