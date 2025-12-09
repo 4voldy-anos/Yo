@@ -36,8 +36,8 @@ async function downloadSingleImage(url, tempDir, index) {
 
 module.exports = {
   config: {
-    name: "midjourney3",
-    aliases: ["mj3",],
+    name: "midjourney",
+    aliases: ["mj",],
     version: "20.0",
     author: "Christus",
     countDown: 20,
