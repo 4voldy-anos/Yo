@@ -361,7 +361,7 @@ function createBankAccount(userData) {
 
 module.exports = {
     config: {
-        name: "bank",
+        name: "bank3",
         aliases: ["atm", "banking"],
         version: "2.0",
         author: "Christus",
